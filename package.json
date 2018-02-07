@@ -1,0 +1,15 @@
+{
+  "name": "rproxy",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/zhaosaisai/rproxy.git",
+  "author": "zhaosaisai <zhaosaisai@weidian.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^5.0.0",
+    "supertest": "^3.0.0"
+  },
+  "scripts": {
+    "test": "mocha test"
+  }
+}
