@@ -5,7 +5,7 @@ module.exports = reverseProxy
 
 function log(...infos) {
     const time = new Date().toLocaleString()
-    console.log(time, ...infos)
+    console.log(time, util.format(...infos))
 }
 
 function errorHandler(req, res, uid) {
@@ -38,23 +38,23 @@ function reverseProxy(options = {}) {
     servers = servers.map(server => {
         const hostPorts = server.split(":")
         return {
-            host: hostPorts[0],
+            hostname: hostPorts[0],
             port: hostPorts[1] || 80
         }
     })
 
     return function(req, res) {
-        const { url = path, headers, method } = req
-        const { host, port } = getServer(servers)
+        const { url, headers, method } = req
+        const { hostname, port } = getServer(servers)
         const preOptions = {
-            host,
+            hostname,
             port,
-            path,
+            path: url,
             headers,
             method
         }
 
-        const uid = `${method} ${path} => ${host}:${port}`
+        const uid = `${method} ${url} => ${hostname}:${port}`
         log("[%s] 接收到代理请求", uid)
 
         const proxyRequest = http.request(preOptions, proxyRes => {
@@ -63,7 +63,7 @@ function reverseProxy(options = {}) {
             res.writeHead(proxyRes.statusCode, proxyRes.headers)
             proxyRes.pipe(res)
         })
-        proxyRequest.pipe(req)
+        req.pipe(proxyRequest)
         proxyRequest.on("error", errorHandler(req, res, uid))
     }
 }
