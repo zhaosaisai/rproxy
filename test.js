@@ -65,6 +65,7 @@ describe("测试代理服务器", () => {
 
     after(async function() {
         servers.forEach(server => server.close())
+        server.close()
     })
 
     it("按照顺序调用各个负载服务器", async () => {
